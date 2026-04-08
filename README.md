@@ -72,10 +72,18 @@ to stop, just type "pkill node"
 ```
 
 ## Screenshots
+### Laptop
 <img src="https://github.com/Loufok0/Serv-itor/blob/main/ressources/Home_laptop.png" width="500">
 <img src="https://github.com/Loufok0/Serv-itor/blob/main/ressources/Status_laptop.png" width="500">
 <img src="https://github.com/Loufok0/Serv-itor/blob/main/ressources/Playlist_laptop.png" width="500">
 <img src="https://github.com/Loufok0/Serv-itor/blob/main/ressources/Album_laptop.png" width="500">
+
+### Phone
+<img src="https://github.com/Loufok0/Serv-itor/blob/main/ressources/Home_phone.png" width="500">
+<img src="https://github.com/Loufok0/Serv-itor/blob/main/ressources/Status_phone.png" width="500">
+<img src="https://github.com/Loufok0/Serv-itor/blob/main/ressources/Playlist_phone.png" width="500">
+<img src="https://github.com/Loufok0/Serv-itor/blob/main/ressources/Album_phone.png" width="500">
+<img src="https://github.com/Loufok0/Serv-itor/blob/main/ressources/Notification_phone.png" width="500">
 
 ## Project structure (suggested)
 - ./public/                   — public files such as index.html, style.css, etc...
