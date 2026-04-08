@@ -12,7 +12,7 @@ const USERS_FILE = 'users.json';
 
 let users = {};
 
-// Charger les utilisateurs
+// Change users
 if (fs.existsSync(USERS_FILE)) {
   users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
   for (const user in users) {
@@ -47,12 +47,12 @@ app.get('/login', (req, res) => {
       input, button { padding: 10px; margin: 10px; font-size: 16px; }
     </style>
     <form method="POST" action="/login">
-      <h2>Connexion</h2>
-      <input type="text" name="username" placeholder="Identifiant" required />
+      <h2>Connection</h2>
+      <input type="text" name="username" placeholder="Login" required />
       <br>
-      <input type="password" name="password" placeholder="Mot de passe" required />
+      <input type="password" name="password" placeholder="Password" required />
       <br>
-      <button type="submit">Se connecter</button>
+      <button type="submit">Login</button>
     </form>
   `);
 });
@@ -111,12 +111,12 @@ app.get('/account', (req, res) => {
       #admin-section { background: #1d1d2b; padding: 20px; border-radius: 12px; box-shadow: 0 0 10px #0005; }
       #restartPassword { width: 100%; margin: 10px 0; padding: 12px; font-size: 16px; border: none; border-radius: 8px; background: #2a1f45; color: #fff; box-sizing: border-box; }
     </style>
-    <h2>Bienvenue ${username}</h2>
+    <h2>Welcome ${username}</h2>
     <form method="POST" action="/account">
-      <h3>Changer le mot de passe</h3>
-      <input type="password" name="oldPassword" placeholder="Ancien mot de passe" required />
-      <input type="password" name="newPassword" placeholder="Nouveau mot de passe" required />
-      <button type="submit">Mettre à jour</button>
+      <h3>Change password</h3>
+      <input type="password" name="oldPassword" placeholder="Old password" required />
+      <input type="password" name="newPassword" placeholder="New password" required />
+      <button type="submit">Update</button>
     </form>
     <script>
       document.getElementById("restartBtn").addEventListener("click", () => {
@@ -132,13 +132,13 @@ app.get('/account', (req, res) => {
       });
     </script>
     <br><br>
-    <a href="/">⬅️ Retour</a>
+    <a href="/">⬅️ Back</a>
     <br>
-    <a href="/login">🚪 Changer d'utilisateur ?</a>
+    <a href="/login">🚪 Change user ?</a>
   `);
 });
 
-// Restriction admin
+// Admin restrictions
 function restrictToAdmin(req, res, next) {
   const user = req.cookies.auth;
   if (user !== 'admiiin') return res.status(403).send('Accès refusé');
@@ -170,7 +170,7 @@ app.post('/account', (req, res) => {
   if (!users[username] || users[username].password !== oldPassword) {
     return res.send(`
       <p style="color:red;">❌ Ancien mot de passe incorrect.</p>
-      <a href="/account">Retour</a>
+      <a href="/account">Back</a>
     `);
   }
 
@@ -179,7 +179,7 @@ app.post('/account', (req, res) => {
 
   res.send(`
     <p style="color:lightgreen;">✅ Mot de passe mis à jour !</p>
-    <a href="/">Retour</a>
+    <a href="/">Back</a>
   `);
 });
 
@@ -217,13 +217,13 @@ app.get('/api/playlists', (req, res) => {
     return { name: playlist, tracks };
   });
 
-// --- Playlist "Favoris" ---
+// --- Playlist "Favorites" ---
 const favTracks = (users[user].favorites || []).map(audioPath => {
-  const audioRel = audioPath; // chemin relatif côté client
+  const audioRel = audioPath; // client side relative path
   const folder = decodeURIComponent(path.dirname(audioPath).split('/').pop());
   const base = decodeURIComponent(path.basename(audioPath, '.mp3'));
 
-  // chercher l'image qui correspond à l'audio dans le dossier
+  // find the image for the title
   const playlistPath = path.join(MEDIA_DIR, user, folder);
   const files = fs.existsSync(playlistPath) ? fs.readdirSync(playlistPath) : [];
   const imageFile = files.find(f =>
@@ -249,7 +249,7 @@ const favTracks = (users[user].favorites || []).map(audioPath => {
 });
 
 
-// API favoris
+// favorites API
 app.get('/api/favorites', (req, res) => {
   const user = req.user;
   if (!users[user].favorites) users[user].favorites = [];
@@ -273,7 +273,7 @@ app.post('/api/favorites/toggle', (req, res) => {
   res.json({ success: true, favorites: favs });
 });
 
-// Créer une playlist
+// create playlist
 app.post('/api/create-playlist', (req, res) => {
   const name = req.body.name?.trim();
   const user = req.user;
@@ -291,7 +291,7 @@ app.post('/api/create-playlist', (req, res) => {
   }
 });
 
-// Supprimer une playlist
+// delete playlist
 app.delete('/api/delete-playlist/:name', (req, res) => {
   const name = req.params.name;
   const user = req.user;
@@ -307,7 +307,7 @@ app.delete('/api/delete-playlist/:name', (req, res) => {
   }
 });
 
-// Téléchargement via script Python
+// Downloading
 function sanitize(str) {
   return str.replace(/[^a-zA-Z0-9_\- ]/g, '_');
 }
@@ -340,7 +340,7 @@ app.post('/api/download', (req, res) => {
   res.status(202).json({ message: 'Téléchargement en arrière-plan lancé.' });
 });
 
-// API de téléchargement
+// download API
 const DOWNLOAD_STATUS_FILE = path.join(__dirname, 'downloads_status.json');
 
 function loadDownloadsFor(user) {
@@ -361,7 +361,7 @@ app.get('/api/downloads', (req, res) => {
   res.json(downloads);
 });
 
-// Info debug
+// Debug infos
 app.get('/ci', (req, res) => {
   console.log('SUCCESFULLY LOGGED');
   console.log('Client info :', {
@@ -382,9 +382,9 @@ app.get('/ci', (req, res) => {
   return res.redirect('/');
 });
 
-// Lancement serveur
+// Launch server
 app.listen(PORT, () => {
-  console.log(`🎵 Serveur lancé sur http://localhost:${PORT}`);
+  console.log(`🎵 Serveur started on http://localhost:${PORT}`);
 });
 
 

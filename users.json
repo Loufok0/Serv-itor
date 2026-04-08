@@ -1,7 +1,9 @@
 {
   "user": {
     "password": "123",
-    "favorites": [],
+    "favorites": [
+      "/playlists/user/Mystere/La%20Femme%20%20La%20Femme%20-%20Vagues.mp3"
+    ],
     "email": "test@gmail.com"
   },
   "user1": {

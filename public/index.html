@@ -9,43 +9,43 @@
 <body>
   <header>
     <nav>
-      <button id="account-btn" onclick="window.location.href='/account'">👤 Mon compte</button>
-      <button id="downloads-btn">⬇️ Mes téléchargements</button>
+      <button id="account-btn" onclick="window.location.href='/account'">👤 My account</button>
+      <button id="downloads-btn">⬇️ My downloads</button>
     </nav>
   </header>
 
   <main>
-    <!-- Barre de téléchargement -->
+    <!-- Download bar -->
     <section id="download-bar">
-      <input type="text" id="youtube-url" placeholder="🎥 Coller un lien YouTube...">
-      <input type="text" id="target-playlist" placeholder="📁 Nom de la playlist...">
-      <button id="download-btn">⬇️ Télécharger</button>
+      <input type="text" id="youtube-url" placeholder="🎥 Past a YouTube link...">
+      <input type="text" id="target-playlist" placeholder="📁 Playlist name...">
+      <button id="download-btn">⬇️ Download</button>
       <span id="download-status"></span>
     </section>
 
-    <!-- Création de playlist -->
+    <!-- Playlist creation -->
     <section id="playlist-controls">
-      <input type="text" id="new-playlist-name" placeholder="➕ Nouvelle playlist">
-      <button id="create-playlist-btn">Créer</button>
+      <input type="text" id="new-playlist-name" placeholder="➕ New playlist">
+      <button id="create-playlist-btn">Create</button>
     </section>
 
-    <!-- Liste des playlists -->
+    <!-- Playlists list -->
     <section id="view-playlists" class="view hidden">
-      <h1>🎵 Vos Playlists</h1>
+      <h1>🎵 Your Playlists</h1>
       <div id="playlists" class="grid"></div>
     </section>
 
-    <!-- Pistes d'une playlist -->
+    <!-- Playlist pist -->
     <section id="view-tracks" class="view hidden">
-      <button id="back">← Retour</button>
+      <button id="back">← Back</button>
       <h2 id="playlist-title"></h2>
       <div id="tracks" class="grid"></div>
     </section>
 
-    <!-- Téléchargements -->
+    <!-- Downloads -->
     <section id="view-downloads" class="view hidden">
-      <button id="back-from-downloads">← Retour</button>
-      <h2>⬇️ Téléchargements</h2>
+      <button id="back-from-downloads">← Back</button>
+      <h2>⬇️ Downloads</h2>
       <ul id="downloads-list"></ul>
     </section>
   </main>
@@ -55,7 +55,7 @@
       <div id="player-main">
         <img id="player-cover" src="" alt="Pochette">
         <div class="track-info">
-          <div id="track-title">Titre</div>
+          <div id="track-title">Title</div>
           <div id="track-playlist">Playlist</div>
         </div>
           <div class="controls">
