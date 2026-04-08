@@ -18,7 +18,7 @@ A small side project i did to have my own music plateform.
 Serv-itor is a small local self hosting music web page that can be launched simply.
 
 Initialy thought to be used with termux on a phone but may work on almost anything.
-You can download termux on the google playstore and maybe the applestore have equivalences.
+You can download [termux](https://play.google.com/store/apps/details?id=com.termux) on the google playstore or on the [applestore](https://apps.apple.com/us/app/termux/id6738933789).
 
 ## Features
 - multi users
