@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>🎧 Serv - itor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <button id="account-btn" onclick="window.location.href='/account'">👤 Mon compte</button>
+      <button id="downloads-btn">⬇️ Mes téléchargements</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Barre de téléchargement -->
+    <section id="download-bar">
+      <input type="text" id="youtube-url" placeholder="🎥 Coller un lien YouTube...">
+      <input type="text" id="target-playlist" placeholder="📁 Nom de la playlist...">
+      <button id="download-btn">⬇️ Télécharger</button>
+      <span id="download-status"></span>
+    </section>
+
+    <!-- Création de playlist -->
+    <section id="playlist-controls">
+      <input type="text" id="new-playlist-name" placeholder="➕ Nouvelle playlist">
+      <button id="create-playlist-btn">Créer</button>
+    </section>
+
+    <!-- Liste des playlists -->
+    <section id="view-playlists" class="view hidden">
+      <h1>🎵 Vos Playlists</h1>
+      <div id="playlists" class="grid"></div>
+    </section>
+
+    <!-- Pistes d'une playlist -->
+    <section id="view-tracks" class="view hidden">
+      <button id="back">← Retour</button>
+      <h2 id="playlist-title"></h2>
+      <div id="tracks" class="grid"></div>
+    </section>
+
+    <!-- Téléchargements -->
+    <section id="view-downloads" class="view hidden">
+      <button id="back-from-downloads">← Retour</button>
+      <h2>⬇️ Téléchargements</h2>
+      <ul id="downloads-list"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <div id="player" class="collapsed">
+      <div id="player-main">
+        <img id="player-cover" src="" alt="Pochette">
+        <div class="track-info">
+          <div id="track-title">Titre</div>
+          <div id="track-playlist">Playlist</div>
+        </div>
+          <div class="controls">
+          <button id="play-pause">▶️</button>
+          <button id="loop-btn">🔁</button>
+          <button id="toggle-size">▲</button>
+        </div>
+        <audio id="audio"></audio>
+      </div>
+
+      <div id="player-expanded">
+        <div id="progress">
+          <span id="current">0:00</span>
+          <input type="range" id="seek" min="0" step="1" value="0">
+          <span id="duration">0:00</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+

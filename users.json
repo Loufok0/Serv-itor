@@ -1,0 +1,18 @@
+{
+  "user": {
+    "password": "123",
+    "favorites": [],
+    "email": "test@gmail.com"
+  },
+  "user1": {
+    "password": "123",
+    "favorites": [
+      ""
+    ],
+    "email": "test@gmail.com"
+  },
+  "user2": {
+    "password": "456",
+    "favorites": []
+  }
+}
