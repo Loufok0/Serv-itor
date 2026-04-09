@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pkg update && pkg upgrade
+pkg install python npm
 python3 -m venv venv && source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirement.txt

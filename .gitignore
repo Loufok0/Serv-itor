@@ -1,3 +1,5 @@
 node_modules
 package*
 venv
+playlists
+user.json
