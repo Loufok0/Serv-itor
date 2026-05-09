@@ -1,7 +1,7 @@
 #!/bin/bash
 
 pkg update && pkg upgrade
-pkg install python npm ffmpeg
+pkg install python npm ffmpeg nodejs
 python3 -m venv venv && source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirement.txt
