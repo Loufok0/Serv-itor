@@ -5,11 +5,11 @@ pkg install python npm ffmpeg nodejs
 python3 -m venv venv && source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirement.txt
-npm install express cookie-parser
+npm install express cookie-parser nodemailer
 npm audit fix
 mkdir -p playlists
 
-node server.js &
+node srcs/server.js &
 sleep 2
 echo "
 =================================

@@ -4,13 +4,24 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const { exec, spawn } = require('child_process');
+const nodemailer = require('nodemailer');
+require("dotenv").config();
 
 const app = express();
-const PORT = 3000;
-const MEDIA_DIR = 'playlists';
-const USERS_FILE = 'users.json';
+const PORT = Number(process.env.BACKEND_PORT || 3000);
+const MEDIA_DIR = process.env.MEDIA_DIR || 'playlists';
+const USERS_FILE = process.env.USERS_FILE || 'users.json';
+const DOWNLOAD_STATUS_FILE = process.env.DOWNLOAD_STATUS_FILE || 'downloads_status.json';
 
 let users = {};
+const ADMIN_PASSWORD = users['admiiin']?.password || '';
+
+
+console.log("MEDIA_DIR loaded:", !!process.env.MEDIA_DIR);
+console.log("USERS_FILE loaded:", !!process.env.USERS_FILE);
+console.log("DOWNLOAD_STATUS_FILE loaded:", !!process.env.DOWNLOAD_STATUS_FILE);
+
+
 
 // Change users
 if (fs.existsSync(USERS_FILE)) {
@@ -144,8 +155,6 @@ function restrictToAdmin(req, res, next) {
   if (user !== 'admiiin') return res.status(403).send('Accès refusé');
   next();
 }
-
-const ADMIN_PASSWORD = users['admiiin']?.password || '';
 
 // Restart server
 app.post('/admin/restart', restrictToAdmin, express.json(), (req, res) => {
@@ -330,18 +339,35 @@ app.post('/api/download', (req, res) => {
   fs.mkdirSync(safePath, { recursive: true });
 
   const args = ['script.py', safeUrl, safePath, user];
+
+
   const pythonProcess = spawn('python3', args, {
     cwd: __dirname,
     detached: true,
-    stdio: 'ignore',
   });
+  
+  pythonProcess.stdout.on('data', (data) => {
+    console.log(`[PYTHON] ${data}`);
+  });
+  
+  pythonProcess.stderr.on('data', (data) => {
+    console.error(`[PYTHON ERROR] ${data}`);
+  });
+  
+  pythonProcess.on('close', (code) => {
+    console.log(`Python terminé avec le code ${code}`);
+  });
+
+
+//  const pythonProcess = spawn('python3', args, {
+//    cwd: __dirname,
+//    detached: true,
+//    stdio: 'ignore',
+//  });
   pythonProcess.unref();
 
   res.status(202).json({ message: 'Téléchargement en arrière-plan lancé.' });
 });
-
-// download API
-const DOWNLOAD_STATUS_FILE = path.join(__dirname, 'downloads_status.json');
 
 function loadDownloadsFor(user) {
   try {
@@ -382,9 +408,83 @@ app.get('/ci', (req, res) => {
   return res.redirect('/');
 });
 
-// Launch server
-app.listen(PORT, () => {
-  console.log(`🎵 Serveur started on http://localhost:${PORT}`);
-});
 
+
+
+async function sendTunnelEmail(tunnelUrl) {
+
+	if (!tunnelUrl) {
+		console.error("❌ Tunnel URL invalide, mail non envoyé.");
+		return;
+	}
+
+	// Récupère les emails valides depuis le JSON global `users`
+	const emails = Object.values(users)
+		.map(u => u.email)
+		.filter(e => e); // ignore les users sans email
+
+	if (emails.length === 0) {
+		console.warn("⚠️ Aucun email valide trouvé, mail non envoyé.");
+		return;
+	}
+
+	// Crée le transporteur SMTP
+	const transporter = nodemailer.createTransport({
+		service: "gmail",
+		auth: {
+			user: process.env.EMAIL_USER,
+			pass: process.env.EMAIL_PASS
+		}
+	});
+
+	try {
+		// Vérifie la connexion SMTP
+		await transporter.verify();
+		console.log("✅ SMTP prêt à envoyer les mails !");
+
+		// Envoi du mail avec BCC pour tous les utilisateurs
+		const info = await transporter.sendMail({
+			from: process.env.EMAIL_USER,
+			bcc: emails.join(","), // <- BCC pour éviter de révéler tous les emails
+			subject: "Nouveau lien Serv-itor",
+			text: `Hello there,
+			Here is the new public link for Serv-itor : ${tunnelUrl}`
+		});
+
+		console.log("📧 Mail envoyé ! ID :", info.messageId);
+	} catch (err) {
+		console.error("❌ Erreur lors de l'envoi du mail :", err);
+	}
+}
+
+
+
+
+
+
+
+// Lancement serveur et tunnel
+app.listen(PORT, () => {
+	console.log(`🎵 Serveur lancé sur http://localhost:${PORT}`);
+
+	// Lancer cloudflared automatiquement
+	const cloudflared = spawn("cloudflared", ["tunnel", "--url", `http://localhost:${PORT}`]);
+
+	cloudflared.stderr.on("data", data => {
+		const str = data.toString();
+		const match = str.match(/https:\/\/[-a-z0-9]+\.trycloudflare\.com/);
+		if (match) {
+			const tunnelUrl = match[0];
+			console.log("🌍 Tunnel public :", tunnelUrl);
+			sendTunnelEmail(tunnelUrl);
+		}
+	});
+	cloudflared.stderr.on("data", data => {
+		console.error("Cloudflared error:", data.toString());
+	});
+
+	cloudflared.on("close", code => {
+		console.log(`Cloudflared exited with code ${code}`);
+	});
+});
 

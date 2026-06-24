@@ -3,8 +3,12 @@ import os
 import json
 import requests
 from yt_dlp import YoutubeDL
+from dotenv import load_dotenv
+loaded = load_dotenv()
+print("dotenv loaded:", loaded)
+STATUS_FILE = os.getenv("DOWNLOAD_STATUS_FILE")
+print("DOWNLOAD_STATUS_FILE =", repr(os.getenv("DOWNLOAD_STATUS_FILE")))
 
-STATUS_FILE = "downloads_status.json"
 
 JS_OPTS = {
 	'js_runtimes': {'node': {}},
