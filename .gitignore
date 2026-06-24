@@ -3,3 +3,4 @@ package*
 venv
 playlists
 user.json
+downloads_status.json

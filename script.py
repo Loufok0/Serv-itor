@@ -71,7 +71,7 @@ def download_audio_and_cover(video_url, output_dir, user):
 		update_status(user, "NULL", video_url, "error", error="Impossible de récupérer les infos")
 		return
 
-	sanitized = get_sanitized_filename(entry_info)
+	sanitized = get_sanitized_filename(info)
 	mp3_path = os.path.join(output_dir, sanitized + ".mp3")
 	jpg_path = os.path.join(output_dir, sanitized + ".jpg")
 
