@@ -6,8 +6,15 @@ from yt_dlp import YoutubeDL
 
 STATUS_FILE = "downloads_status.json"
 
-JS_OPTS = {
-	'js_runtimes': {'node': {}},
+YT_OPTS = {
+    "extractor_args": {
+        "youtube": {
+            "player_client": ["android"]
+        }
+    },
+    "js_runtimes": {
+        "node": {}
+    },
 }
 
 def sanitize_filename(name):
@@ -55,7 +62,7 @@ def download_audio_and_cover(video_url, output_dir, user):
 		'quiet': True,
 		'skip_download': True,
 		'ignoreerrors': True,
-		**JS_OPTS,
+		**YT_OPTS,
 	}
 
 	try:
@@ -87,7 +94,7 @@ def download_audio_and_cover(video_url, output_dir, user):
 		'format': 'bestaudio/best',
 		'outtmpl': os.path.join(output_dir, sanitized + ".%(ext)s"),
 		'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '192'}],
-		**JS_OPTS,
+		**YT_OPTS,
 	}
 
 	try:
@@ -114,7 +121,7 @@ def download_playlist_audio_and_covers(url, output_dir, user):
 		'extract_flat': 'in_playlist',
 		'skip_download': True,
 		'ignoreerrors': True,
-		**JS_OPTS,
+		**YT_OPTS,
 	}
 
 	try:
@@ -138,7 +145,7 @@ def download_playlist_audio_and_covers(url, output_dir, user):
 			'quiet': True,
 			'skip_download': True,
 			'ignoreerrors': True,
-			**JS_OPTS,
+			**YT_OPTS,
 		}
 
 		for entry in entries:
