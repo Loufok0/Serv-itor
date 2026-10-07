@@ -395,6 +395,8 @@ function validToken(provided) {
 }
 
 app.post('/api/audile', (req, res) => {
+	console.log('Reçu :', req.headers['user-agent'], JSON.stringify(req.body));
+
   if (!validToken(req.query.token)) {
     return res.status(401).json({ error: 'Token invalide' });
   }
