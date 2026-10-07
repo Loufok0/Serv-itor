@@ -4,3 +4,4 @@ venv
 playlists
 user.json
 downloads_status.json
+recognized_tracks.jsonl

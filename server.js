@@ -4,6 +4,9 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const { exec, spawn } = require('child_process');
+const crypto = require('crypto');
+const TRACK_TOKEN = process.env.TRACK_TOKEN || 'aaa';
+const TRACKS_FILE = path.join(__dirname, 'recognized_tracks.jsonl');
 
 const app = express();
 const PORT = 3000;
@@ -30,7 +33,7 @@ app.use('/playlists', express.static(MEDIA_DIR));
 
 // Auth middleware
 app.use((req, res, next) => {
-  if (['/', '/login', '/account'].includes(req.path)) return next();
+  if (['/', '/login', '/account', '/api/audile'].includes(req.path)) return next();
   const authUser = req.cookies.auth;
   if (authUser && users[authUser]) {
     req.user = authUser;
@@ -381,6 +384,37 @@ app.get('/ci', (req, res) => {
   });
   return res.redirect('/');
 });
+
+
+
+function validToken(provided) {
+  if (!TRACK_TOKEN || typeof provided !== 'string') return false;
+  const a = Buffer.from(provided);
+  const b = Buffer.from(TRACK_TOKEN);
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
+app.post('/api/audile', (req, res) => {
+  if (!validToken(req.query.token)) {
+    return res.status(401).json({ error: 'Token invalide' });
+  }
+
+  const { title, artist } = req.body || {};
+  if (!title || !artist) {
+    return res.status(400).json({ error: 'title et artist requis' });
+  }
+
+  const entry = { receivedAt: new Date().toISOString(), ...req.body };
+  fs.appendFile(TRACKS_FILE, JSON.stringify(entry) + '\n', err => {
+    if (err) {
+      console.error('Erreur écriture track :', err);
+      return res.status(500).json({ error: 'Erreur serveur' });
+    }
+    console.log(`🎵 Reçu : ${artist} - ${title}`);
+    res.status(201).json({ success: true });
+  });
+});
+
 
 // Launch server
 app.listen(PORT, () => {
